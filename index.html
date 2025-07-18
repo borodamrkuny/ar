@@ -2,78 +2,46 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>AR Fullscreen Video</title>
-    <!-- Подключение библиотек -->
+    <title>Fixed AR Video</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@master/aframe/build/aframe-ar.js"></script>
-    
-    <!-- Скрипт стабилизации -->
-    <script>
-    AFRAME.registerComponent('marker-stabilizer', {
-        tick: function() {
-            if(this.el.object3D.visible) {
-                const markerPos = this.el.object3D.position;
-                this.el.sceneEl.camera.el.object3D.position.lerp(markerPos, 0.05);
-            }
-        }
-    });
-    </script>
-
     <style>
         body { margin: 0; overflow: hidden; }
+        #fixed-video {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
+    <!-- Фиксированное видео -->
+    <video id="fixed-video" autoplay loop muted></video>
+
+    <!-- AR-сцена только для активации камеры -->
     <a-scene 
         embedded 
-        arjs="
-            trackingMethod: best;
-            sourceType: webcam;
-            detectionMode: mono_and_matrix;
-            matrixCodeType: 3x3;
-            cameraParametersUrl: assets/camera_para.dat
-        "
-        renderer="logarithmicDepthBuffer: true; precision: high;"
+        arjs="sourceType: webcam;"
+        style="display: none;"  <!-- Скрываем AR-сцену -->
     >
-        <a-marker 
-            type="pattern" 
-            preset="custom" 
-            url="assets/pattern-marker.patt"
-            emitevents="true"
-            cursor="rayOrigin: mouse"
-            marker-stabilizer
-        >
-            <a-video
-                src="assets/video.mp4"
-                width="3.0"
-                height="1.6875"
-                position="0 0 0"
-                rotation="-90 0 0"
-                autoplay
-                loop
-                muted
-                material="shader: flat;"
-                geometry="primitive: plane; height: 1.6875; width: 3.0"
-            ></a-video>
-        </a-marker>
+        <a-marker type="pattern" url="assets/pattern.patt"></a-marker>
         <a-entity camera></a-entity>
     </a-scene>
 
-    <!-- Скрипт адаптации под экран -->
     <script>
-    window.addEventListener('load', () => {
-        const scene = document.querySelector('a-scene');
-        const video = document.querySelector('a-video');
-        
-        function resizeVideo() {
-            const aspect = window.innerWidth / window.innerHeight;
-            video.setAttribute('width', aspect * 1.5);
-            video.setAttribute('height', 1.5);
-        }
-        
-        window.addEventListener('resize', resizeVideo);
-        resizeVideo();
-    });
+    // Загружаем видео при обнаружении маркера
+    const scene = document.querySelector('a-scene');
+    const arVideo = document.getElementById('fixed-video');
+    
+    // Указываем путь к видео
+    arVideo.src = 'assets/video.mp4';
+    
+    // Альтернатива: показать видео сразу без маркера
+    // arVideo.play().catch(e => console.log(e));
     </script>
 </body>
 </html>
