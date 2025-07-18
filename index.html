@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AR Video Magnet</title>
+  <!-- Локальные библиотеки -->
+  <script src="node_modules/aframe/dist/aframe-master.min.js"></script>
+  <script src="node_modules/@ar-js-org/ar.js/aframe/build/aframe-ar.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <a-scene embedded arjs="sourceType: webcam; detectionMode: mono; trackingMethod: best;">
+    <a-marker type="pattern" preset="custom" url="assets/pattern-marker.patt">
+      <a-video
+        src="assets/video.mp4"
+        width="1.6" height="0.9"
+        position="0 0 0"
+        rotation="-90 0 0"
+        autoplay="true"
+        loop="true"
+        muted="true"  <!-- Важно для автовоспроизведения -->
+      ></a-video>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
+</html>
